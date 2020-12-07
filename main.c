@@ -2,36 +2,29 @@
 #include <stdlib.h>
 #include <windows.h>
 
-void del(int*p,int*n)
+void del(int*p,int n)
 {
-    int i,j,len=*n,count=0,*new;
-    for(i=1;i<len;i++)if(p[0]==p[i])count++;
-    for(i=1;i<len-1;i++)
+    int i,j,count=0;
+    for(i=0;i<n-1;i++)
     {
-        for(j=i+1;j<len;j++)
+        for(j=i+1;j<n;j++)
         {
-            if(p[i]==p[j]&&p[j]!=p[0])
+            if(p[i]==p[j])
             {
-                count++;
-                p[j]=p[0];
+                if(p[j]!=0)count++;
+                p[j]=0;
             }
         }
     }
-    new=(int*)malloc((len-count+1)*sizeof(int));
-    new[0]=p[0];
-    new[len-count]=0;
-    for(i=1,j=1;i<len;i++)
+    for(i=0,j=0;i<n;i++)
     {
-        if(p[i]!=p[0])
+        if(p[i]!=0)
         {
-            new[j]=p[i];
+            p[j]=p[i];
             j++;
         }
     }
-    *n=len-count+1;
-    free(p);
-    p=(int*)malloc((len-count+1)*sizeof(int));
-    for(i=0;i<*n;i++)p[i]=new[i];
+    for(i=n-count;i<n;i++)p[i]=0;
 }
 
 void Task3()
@@ -48,7 +41,7 @@ void Task3()
     }
     printf("Начальный массив: ");
     for(i=0;i<n;i++)printf("%d ",p[i]);
-    del(p,&n);
+    del(p,n);
     printf("\nИзмененный массив: ");
     for(i=0;i<n;i++)printf("%d ",p[i]);
     free(p);
@@ -89,9 +82,10 @@ void Task5()
     else printf("Индекс элемента со значением %d равен %d\n",value,key);
 }
 
-void unite(int *p1,int *p2,int m,int n, int *p)
+int* unite(int *p1,int *p2,int m,int n)
 {
-    int i,j1=0,j2=0;
+    int i,j1=0,j2=0,*p;
+    p=(int*)malloc((m+n)*sizeof(int));
     for(i=0;i<m+n;i++)
     {
         if(j1<m&&j2<n)
@@ -121,6 +115,7 @@ void unite(int *p1,int *p2,int m,int n, int *p)
             }
         }
     }
+    return p;
 }
 
 void Task6()
@@ -144,8 +139,7 @@ void Task6()
         printf("Введите элемент массива\n");
         scanf("%d",&p2[i]);
     }
-    p=(int*)malloc((m+n)*sizeof(int));
-    unite(p1,p2,m,n,p);
+    p=unite(p1,p2,m,n);
     printf("Массив 1: ");
     for(i=0;i<m;i++)printf("%d ",p1[i]);
     printf("\nМассив 2: ");
